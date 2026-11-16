@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>BusQuilla - Buses de Barranquilla en vivo</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  body { margin: 0; display: flex; height: 100vh; font: 14px system-ui, sans-serif; }
+  #panel { width: 360px; padding: 14px; overflow: auto; background: #f4f6f8; }
+  #mapa { flex: 1; }
+  h1 { margin: 0; font-size: 22px; } h3 { margin: 16px 0 6px; } ul, ol { padding-left: 18px; } li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div id="panel">
+  <h1>BusQuilla</h1>
+  <p>Rutas de bus de Barranquilla en vivo. <b>1er clic</b> en el mapa: tu ubicación. <b>2do clic</b>: tu destino. Otro clic reinicia.</p>
+  Velocidad de la simulación: <select id="vel"><option>1</option><option selected>10</option><option>60</option></select> x
+  <h3>Buses que pasan cerca de ti</h3><ul id="cerca">Selecciona tu ubicación en el mapa</ul>
+  <h3>Mejor viaje (Dijkstra)</h3><div id="viaje">-</div>
+  <p><small>Rutas reales de OpenStreetMap. Posición de los buses y conductores simulados.</small></p>
+</div>
+<div id="mapa"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="rutas.js"></script>
+<script src="grafo.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
