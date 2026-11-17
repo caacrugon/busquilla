@@ -1,0 +1,311 @@
+\documentclass[aspectratio=169,10pt]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[sfdefault,lining]{FiraSans}
+\usepackage[scale=0.88]{FiraMono}
+\usepackage{amsmath,amssymb,array,booktabs,tikz,fontawesome5}
+\hyphenpenalty=10000 \exhyphenpenalty=10000 \raggedright
+\usepackage[most]{tcolorbox}
+\usetikzlibrary{positioning,arrows.meta}
+
+% ---------- Paleta ----------
+\definecolor{navy}{HTML}{0F172A}
+\definecolor{ink}{HTML}{1E293B}
+\definecolor{muted}{HTML}{64748B}
+\definecolor{line}{HTML}{E2E8F0}
+\definecolor{paper}{HTML}{F8FAFC}
+\definecolor{teal}{HTML}{0D9488}
+\definecolor{sky}{HTML}{0284C7}
+\definecolor{orange}{HTML}{EA580C}
+\definecolor{green}{HTML}{16A34A}
+\definecolor{cream}{HTML}{FEF3C7}
+
+% ---------- Plantilla ----------
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor{background canvas}{bg=paper}
+\setbeamercolor{normal text}{fg=ink}
+\setbeamercolor{structure}{fg=teal}
+\newcommand\kcol{teal}
+\newcommand\parte{1}
+\newcommand\setparte[2]{\renewcommand\parte{#1}\renewcommand\kcol{#2}}
+\setbeamertemplate{frametitle}{%
+  \vspace*{3mm}%
+  {\scriptsize\bfseries\color{\kcol}\insertframesubtitle\par}\vspace{1.2mm}%
+  {\fontsize{17}{20}\selectfont\bfseries\color{ink}\insertframetitle\par}\vspace{1.6mm}%
+  {\color{\kcol}\rule{14mm}{1.4pt}}}
+\newcommand\pl[3]{\ifnum\parte=#1{\color{#3}\bfseries #1\,#2}\else{\color{muted!70}#1\,#2}\fi}
+\setbeamertemplate{footline}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \draw[line] ([yshift=6mm]current page.south west) -- ([yshift=6mm]current page.south east);
+    \node[anchor=west,font=\tiny\bfseries,text=ink] at ([xshift=6mm,yshift=3mm]current page.south west) {Bus\textcolor{teal}{Quilla}};
+    \node[font=\tiny] at ([yshift=3mm]current page.south) {\pl{1}{Problemática}{teal}\quad\pl{2}{Modelo}{sky}\quad\pl{3}{Código}{orange}\quad\pl{4}{Resultados}{green}};
+    \node[anchor=east,font=\tiny,text=muted] at ([xshift=-6mm,yshift=3mm]current page.south east) {\insertframenumber\,/\,\inserttotalframenumber};
+  \end{tikzpicture}}
+\setbeamersize{text margin left=9mm,text margin right=9mm}
+
+% ---------- Tarjetas ----------
+\tcbset{base/.style={enhanced,colback=white,colframe=line,boxrule=.5pt,arc=2.2mm,left=3.2mm,right=3.2mm,top=2.6mm,bottom=2.6mm,fontupper=\small\raggedright}}
+\newtcolorbox{card}[1][teal]{base,overlay={\begin{tcbclipinterior}\fill[#1] (frame.north west) rectangle ([xshift=1.3mm]frame.south west);\end{tcbclipinterior}}}
+\newtcolorbox{plaincard}[1][]{base,#1}
+\newtcolorbox{stepcard}[2][]{base,overlay={\begin{tcbclipinterior}\fill[#2] (frame.north west) rectangle ([xshift=1.3mm]frame.south west);\end{tcbclipinterior}},#1}
+\tcbset{arrow/.style={finish={\node[text=muted,font=\large] at ([xshift=4.5mm]frame.east) {\faArrowRight};}}}
+\newcommand\kick[2]{{\scriptsize\bfseries\color{#1}#2\par}\vspace{1mm}}
+\newcommand\ctitle[1]{{\normalsize\bfseries\color{ink}#1\par}\vspace{1mm}}
+\newcommand\cmuted[1]{{\color{muted}#1\par}}
+\newcommand\chip[2]{\tcbox[enhanced,colback=#1,colframe=#1,boxrule=0pt,arc=1.2mm,left=2mm,right=2mm,top=1.2mm,bottom=1.2mm,on line]{\ttfamily\footnotesize\color{ink}#2}}
+\newcommand\icono[2]{\tikz\node[circle,fill=#1!15,text=#1,minimum size=9mm,font=\large]{#2};}
+
+% ---------- Macros de diapositivas ----------
+\newcommand\chk[2]{\noindent\begin{tabular}{@{}p{6mm}@{}>{\raggedright\arraybackslash}p{.88\linewidth}@{}}\textcolor{teal}{\faCheckCircle} & \textbf{#1:} #2\end{tabular}\par}
+\newcommand\paso[4]{\kick{#1}{\ttfamily #2}\ctitle{#3}\cmuted{#4}}
+\newcommand\lnum[1]{\textcolor{sky!70!white}{#1}}\newcommand\cmt[1]{\textcolor{white!50!navy}{#1}}
+\newcommand\tz[4]{\centering{\scriptsize\ttfamily\color{#4}#1\par}\vspace{1.5mm}{\fontsize{15}{17}\selectfont\bfseries\color{ink}#2\par}\vspace{1mm}{\scriptsize\color{muted}#3\par}}
+\newcommand\barra[4]{{\footnotesize\bfseries\color{#3}#1}\hfill{\ttfamily\footnotesize\color{#3}#2}\par\vspace{1mm}
+\tikz{\fill[line] (0,0) rectangle (\linewidth,2.2mm);\fill[#3] (0,0) rectangle (#4\linewidth,2.2mm);}\par\vspace{3mm}}
+
+\begin{document}
+
+% ===================== 0. Portada =====================
+{\setbeamercolor{background canvas}{bg=navy}
+\begin{frame}[plain]
+\begin{tikzpicture}[remember picture,overlay]
+  \begin{scope}[shift={([xshift=-40mm,yshift=2mm]current page.east)},every node/.style={circle,inner sep=0pt}]
+    \foreach \n/\x/\y/\c in {a/-22/14/teal,b/-8/20/orange,c/6/12/teal,d/18/18/sky,e/-16/-2/sky,f/0/0/orange,g/14/-4/teal,h/-6/-16/teal,i/10/-18/orange,j/24/2/sky}
+      \node[fill=\c,minimum size=3.2mm,opacity=.85] (\n) at (\x mm,\y mm) {};
+    \foreach \u/\v in {a/b,b/c,c/d,a/e,e/f,f/c,f/g,g/d,e/h,h/i,i/g,g/j,d/j}
+      \draw[white,opacity=.25,line width=.8pt] (\u) -- (\v);
+    \draw[orange,line width=1.6pt,dash pattern=on 3pt off 2pt] (e) -- (f) -- (g) -- (j);
+  \end{scope}
+\end{tikzpicture}
+\vspace{6mm}
+{\scriptsize\bfseries\color{orange}MATEMÁTICAS DISCRETAS · UNIVERSIDAD DEL NORTE\par}\vspace{3mm}
+{\fontsize{38}{40}\selectfont\bfseries\color{white}Bus\textcolor{teal!80!white}{Quilla}\par}\vspace{3mm}
+\begin{minipage}{.55\textwidth}\raggedright
+{\large\color{white!80!navy}La red de buses de Barranquilla modelada como un grafo ponderado para estimar llegadas y descubrir rutas\par}
+\end{minipage}\par\vspace{5mm}
+{\color{orange}\rule{16mm}{1.6pt}}\par\vspace{4mm}
+{\small\color{white!85!navy}Camilo Cruz · Nicolás Montenegro · Gustavo Parody · Josué Salas\par}\vspace{1.5mm}
+{\footnotesize\color{white!55!navy}Profesor: MSc Iván Gómez\par}
+\end{frame}}
+
+% ===================== 1. Problemática =====================
+\setparte{1}{teal}
+\begin{frame}{Esperar en el paradero sin información}{PARTE 1 · PROBLEMÁTICA}
+\vfill
+\begin{tcbraster}[raster columns=3,raster equal height,raster column skip=4mm]
+\begin{card}[orange]\icono{orange}{\faClock[regular]}\par\vspace{3mm}\ctitle{Incertidumbre de llegada}\cmuted{Nadie sabe si el bus tarda 2 o 20 minutos.}\end{card}
+\begin{card}[teal]\icono{teal}{\faEyeSlash}\par\vspace{3mm}\ctitle{Rutas invisibles}\cmuted{Pasan otras rutas útiles que el usuario desconoce.}\end{card}
+\begin{card}[sky]\icono{sky}{\faRedo}\par\vspace{3mm}\ctitle{Hábito subóptimo}\cmuted{Siempre se toma la misma ruta directa más lenta.}\end{card}
+\end{tcbraster}
+\vfill\vfill
+\end{frame}
+
+% ===================== 2. Contexto =====================
+\begin{frame}{Una ciudad que depende del transporte público}{PARTE 1 · CONTEXTO URBANO}
+\vfill
+\begin{tcbraster}[raster columns=3,raster equal height,raster column skip=4mm]
+\begin{card}[teal]{\fontsize{30}{32}\selectfont\bfseries\color{teal}2,27\,M\par}\vspace{2mm}\ctitle{Área Metropolitana}\cmuted{Habitantes en Barranquilla y municipios vecinos.}\end{card}
+\begin{card}[ink]{\fontsize{30}{32}\selectfont\bfseries\color{ink}56,8\%\par}\vspace{2mm}\ctitle{Usuarios de bus o Transmetro}\cmuted{Más de la mitad viaja en bus cada día.}\end{card}
+\begin{card}[orange]{\fontsize{30}{32}\selectfont\bfseries\color{orange}75\%+\par}\vspace{2mm}\ctitle{Trayectos estancados}\cmuted{Reportan tiempos iguales o mayores cada año.}\end{card}
+\end{tcbraster}
+\vspace{4mm}
+{\scriptsize\color{muted}\faBookOpen\ \ Fuentes: DANE (2024) y Encuesta de Percepción Ciudadana Barranquilla Cómo Vamos.\par}
+\vfill\vfill
+\end{frame}
+
+% ===================== 3. Propuesta =====================
+\begin{frame}{BusQuilla: rutas en vivo y camino óptimo}{PARTE 1 · PROPUESTA}
+\vfill
+\begin{columns}[c]
+\column{.54\textwidth}
+\setlength{\parskip}{3.5mm}
+\chk{ETA en vivo}{muestra cuánto tarda cada bus cercano.}
+\chk{Viaje más rápido}{calcula combinaciones con Dijkstra.}
+\chk{Modelo matemático}{red representada como grafo ponderado.}
+\chk{Datos reales}{41 rutas extraídas de OpenStreetMap.}
+\column{.42\textwidth}
+\begin{plaincard}
+\kick{muted}{ESCALA DE LA RED MODELADA}\vspace{1mm}
+{\fontsize{20}{22}\selectfont\bfseries\color{teal}41 rutas\par}\cmuted{Transmetro y transporte colectivo}\vspace{2.5mm}
+{\fontsize{20}{22}\selectfont\bfseries\color{ink}1.815 paraderos\par}\cmuted{403,4 km de trazado urbano}\vspace{2.5mm}
+{\fontsize{20}{22}\selectfont\bfseries\color{orange}17.113 aristas\par}\cmuted{Tramos en bus y transbordos a pie}
+\end{plaincard}
+\end{columns}
+\vfill
+\end{frame}
+
+% ===================== 4. Grafo =====================
+\setparte{2}{sky}
+\begin{frame}{Vértices separados y pesos en minutos}{PARTE 2 · GRAFO PONDERADO $G = (V, E, W)$}
+\vfill
+\begin{tcbraster}[raster columns=3,raster equal height,raster column skip=4mm]
+\begin{card}[teal]\chip{teal!12}{V = \{(r, i)\}}\par\vspace{3mm}\ctitle{Vértices por ruta}\cmuted{Cada paradero pertenece a una sola ruta para cobrar el transbordo.}\end{card}
+\begin{card}[sky]\chip{sky!12}{w = d / 333 m/min}\par\vspace{3mm}\ctitle{Arista de bus}\cmuted{1.774 conexiones seguidas en la misma ruta a 20 km/h.}\end{card}
+\begin{card}[orange]\chip{orange!12}{w = d / 75 + 5 min}\par\vspace{3mm}\ctitle{Arista de transbordo}\cmuted{15.339 enlaces a pie $\le$ 300 m entre rutas más 5 min de espera.}\end{card}
+\end{tcbraster}
+\vfill\vfill
+\end{frame}
+
+% ===================== 5. Aritmética modular =====================
+\begin{frame}{Simulación circular de buses y cálculo de ETA}{PARTE 2 · ARITMÉTICA MODULAR}
+\vfill
+\begin{tcbraster}[raster columns=2,raster equal height,raster column skip=5mm]
+\begin{card}[teal]\kick{teal}{ESTADO SOBRE $\mathbb{Z}_{2L}$}\ctitle{Ida y vuelta en un solo ciclo}
+\cmuted{Cada bus avanza $u \leftarrow (u + v\cdot\Delta t)\ \text{mód}\ 2L$ con velocidad aleatoria entre 18 y 26 km/h.}\vspace{3mm}
+\chip{line!60}{s = u (ida) · s = 2L - u (vuelta)}\end{card}
+\begin{card}[orange]\kick{orange}{CONSULTA EN $O(1)$ POR BUS}\ctitle{Fórmula cerrada de llegada}
+\cmuted{El paradero $i$ aparece en $c_i$ (ida) y $2L - c_i$ (vuelta); se toma el mínimo tiempo.}\vspace{3mm}
+\chip{cream}{ETA(i) = mín ((x - u) mód 2L) / v}\end{card}
+\end{tcbraster}
+\vfill\vfill
+\end{frame}
+
+% ===================== 6. Arquitectura =====================
+\setparte{3}{orange}
+\begin{frame}{Cinco módulos desacoplados ($<$ 160 líneas)}{PARTE 3 · BLOQUE A: ARQUITECTURA COMPLETA DEL CÓDIGO}
+\vfill
+\begin{plaincard}[left=0mm,right=0mm,top=1mm,bottom=1mm]
+\renewcommand\arraystretch{1.55}\footnotesize
+\begin{tabular}{@{\hspace{3mm}}>{\raggedright\arraybackslash}p{.2\linewidth}>{\raggedright\arraybackslash}p{.46\linewidth}>{\raggedright\arraybackslash}p{.24\linewidth}@{}}
+\textbf{\color{muted}Archivo} & \textbf{\color{muted}Función en el sistema} & \textbf{\color{muted}Complejidad / Herramienta}\\\hline
+\texttt{\color{teal}datos/extraer\_osm.py} & Encadena polilíneas, filtra huecos $>$ 800 m y simplifica esquinas & \textcolor{muted}{Python (39 líneas)}\\
+\texttt{\color{teal}rutas.js} & Arreglo RUTAS con 41 rutas y 1.815 coordenadas [lat, lng] & \textcolor{muted}{403,4 km mapeados}\\
+\texttt{\color{teal}grafo.js} & Haversine, lista de adyacencia, Dijkstra y agrupación en tramos & \textcolor{muted}{$O(n^2)$ · Modelo puro}\\
+\texttt{\color{teal}app.js + index.html} & Reloj de 112 buses, conductores, clics en mapa y panel lateral & \textcolor{muted}{Leaflet 1.9.4 · $O(B)$/s}\\
+\texttt{\color{teal}test.js} & 4 pruebas unitarias: Haversine, transbordo, caminata y ETA & \textcolor{muted}{\texttt{node test.js}}\\
+\end{tabular}
+\end{plaincard}
+\vfill
+\end{frame}
+
+% ===================== 7. Flujo =====================
+\begin{frame}{Cómo cooperan los scripts al cargar la página}{PARTE 3 · BLOQUE A: FLUJO DEL CÓDIGO EN EJECUCIÓN}
+\vfill
+\begin{tcbraster}[raster columns=3,raster equal height,raster column skip=9mm]
+\begin{stepcard}[arrow]{teal}\paso{teal}{01 · extraer\_osm.py}{Geometría fiel a la calle}{Ramer-Douglas-Peucker (12 m) preserva esquinas y añade puntos cada 400 m.}\end{stepcard}
+\begin{stepcard}[arrow]{sky}\paso{sky}{02 · construirGrafo()}{1.646.205 pares evaluados}{Compara todos los vértices en $<$ 0,1 s y crea aristas de bus y transbordo.}\end{stepcard}
+\begin{stepcard}{orange}\paso{orange}{03 · setInterval()}{112 buses en tiempo real}{1 bus cada 4 km (mínimo 2 por ruta) con aceleración x1, x10 o x60.}\end{stepcard}
+\end{tcbraster}
+\vfill\vfill
+\end{frame}
+
+% ===================== 8. Dijkstra =====================
+\begin{frame}{Camino de tiempo mínimo con vértices virtuales}{PARTE 3 · BLOQUE B: ALGORITMO DE DIJKSTRA EN GRAFO.JS}
+\vfill
+\begin{columns}[c]
+\column{.57\textwidth}
+\begin{tcolorbox}[enhanced,colback=navy,colframe=navy,arc=2.2mm,left=4mm,right=3mm,top=3mm,bottom=3mm]
+\ttfamily\scriptsize\color{white}\renewcommand\arraystretch{1.25}
+\begin{tabular}{@{}r@{\hspace{2mm}}l@{}}
+\lnum{1.} & D[v] $\leftarrow\infty$, prev[v] $\leftarrow$ nulo\\
+\lnum{2.} & Para v con d(o, v) $\le$ 600 m:\\
+ & \quad D[v] $\leftarrow$ d(o, v) / v\_pie + $\tau$ \cmt{// caminar + 5 min}\\
+\lnum{3.} & Mientras haya no visitado con D[u] $<\infty$:\\
+ & \quad u $\leftarrow$ argmin D[u]; marcar u visitado\\
+ & \quad \textcolor{orange!80!white}{si D[u] + w < D[v]:} D[v] $\leftarrow$ D[u] + w; prev[v] $\leftarrow$ u\\
+\lnum{4.} & T* $\leftarrow$ d(o, z) / v\_pie \cmt{// comparar con ir a pie}\\
+\lnum{5.} & Para v con d(v, z) $\le$ 600 m:\\
+ & \quad T* $\leftarrow$ min(T*, D[v] + d(v, z) / v\_pie)\\
+\end{tabular}
+\end{tcolorbox}
+\column{.39\textwidth}
+\begin{card}[teal]{\small\bfseries\color{teal}Pesos no negativos ($w \ge 0$)\par}\vspace{.6mm}\cmuted{\footnotesize Garantiza optimalidad exacta al marcar cada paradero definitivo.}\end{card}\vspace{-1mm}
+\begin{card}[sky]{\small\bfseries\color{sky}Búsqueda lineal en $\sim$7 ms\par}\vspace{.6mm}\cmuted{\footnotesize Con 1.815 vértices, $O(n^2)$ responde al instante sin montículo binario.}\end{card}\vspace{-1mm}
+\begin{card}[orange]{\small\bfseries\color{orange}Reconstrucción en tramos\par}\vspace{.6mm}\cmuted{\footnotesize Agrupa vértices consecutivos de una ruta en instrucciones legibles.}\end{card}
+\end{columns}
+\vfill
+\end{frame}
+
+% ===================== 9. Traza =====================
+\begin{frame}{Traza exacta de un transbordo en la red de prueba}{PARTE 3 · BLOQUE B: VALIDACIÓN MATEMÁTICA DE DIJKSTRA}
+\vfill
+\begin{tcbraster}[raster columns=4,raster equal height,raster column skip=3mm]
+\begin{plaincard}\tz{o $\to$ A$_0$}{5,00 min}{Espera inicial $\tau$}{sky}\end{plaincard}
+\begin{plaincard}\tz{A$_0$ $\to$ A$_1$ $\to$ A$_2$}{13,36 min}{2 tramos bus A}{sky}\end{plaincard}
+\begin{plaincard}[colback=cream,colframe=orange!60,boxrule=.8pt]\tz{A$_2$ $\to$ B$_0$}{5,00 min}{\color{orange!70!black}Arista transbordo}{orange}\end{plaincard}
+\begin{plaincard}\tz{B$_0$ $\to$ B$_1$ $\to$ B$_2$}{13,36 min}{2 tramos bus B}{sky}\end{plaincard}
+\end{tcbraster}
+\vspace{2mm}
+\begin{tcolorbox}[enhanced,colback=navy,colframe=navy,arc=2.2mm,left=4mm,right=4mm,top=2.5mm,bottom=2.5mm]
+{\footnotesize\color{white!80!navy}Si o y z coinciden en A$_0$ y B$_2$ (caso test.js): 5 + 6,68 + 5 + 6,68}\hfill{\ttfamily\small\bfseries\color{orange!85!white}Costo mínimo T* = 23,357 min}
+\end{tcolorbox}
+\vfill\vfill
+\end{frame}
+
+% ===================== 10. Vista general =====================
+\setparte{4}{green}
+\begin{frame}{Vista general de BusQuilla en ejecución}{PARTE 4 · CAPTURAS DE LA APLICACIÓN WEB}
+\vfill
+\begin{columns}[c]
+\column{.64\textwidth}
+\begin{plaincard}[left=1mm,right=1mm,top=1mm,bottom=1mm]\includegraphics[width=\linewidth]{img/app_vista.png}\end{plaincard}
+\column{.32\textwidth}
+\begin{card}[sky]{\small\bfseries\color{sky}\faColumns\ \ Panel izquierdo\par}\vspace{1mm}\cmuted{\footnotesize Selector de velocidad (x1, x10, x60), lista de buses cercanos y ETA.}\end{card}
+\begin{card}[green]{\small\bfseries\color{green}\faMapMarked*\ \ Mapa Leaflet\par}\vspace{1mm}\cmuted{\footnotesize 41 rutas de colores, 112 buses móviles y camino punteado de Dijkstra.}\end{card}
+\end{columns}
+\vfill
+\end{frame}
+
+% ===================== 11. Flujo interactivo =====================
+\begin{frame}{De la consulta de paraderos al itinerario óptimo}{PARTE 4 · FLUJO INTERACTIVO EN LA PÁGINA}
+\vfill
+\begin{tcbraster}[raster columns=2,raster equal height,raster column skip=5mm]
+\begin{plaincard}[left=1.5mm,right=1.5mm,top=1.5mm]\includegraphics[width=\linewidth]{img/clic1.png}\par\vspace{2mm}
+{\small\bfseries\color{green}1.\textsuperscript{er} clic\ \color{ink}· Buses que pasan cerca de ti\par}\cmuted{\footnotesize Ordena por llegada los paraderos a $\le$ 600 m con placa y conductor.}\end{plaincard}
+\begin{plaincard}[left=1.5mm,right=1.5mm,top=1.5mm]\includegraphics[width=\linewidth]{img/clic2.png}\par\vspace{2mm}
+{\small\bfseries\color{green}2.\textsuperscript{do} clic\ \color{ink}· Mejor viaje con transbordo\par}\cmuted{\footnotesize Uninorte Puerta 7 $\to$ Le Meridien}\end{plaincard}
+\end{tcbraster}
+\vfill
+\end{frame}
+
+% ===================== 12. Experimento =====================
+\begin{frame}{Experimento con 300 viajes aleatorios}{PARTE 4 · EVALUACIÓN EMPÍRICA}
+\vfill
+\begin{tcbraster}[raster columns=2,raster equal height,raster column skip=5mm]
+\begin{card}[orange]{\fontsize{36}{38}\selectfont\bfseries\color{orange}60,5\%\par}\vspace{2mm}\ctitle{Requieren al menos un transbordo}\cmuted{46,0\% usa un transbordo y 14,5\% usa dos o más. Solo 39,5\% es directo.}\end{card}
+\begin{card}[green]\kick{green}{AHORRO PROMEDIO DE TIEMPO (37\% MENOS)}\vspace{1.5mm}
+\barra{BusQuilla (óptimo)}{32,9 min}{green}{.6255}
+\barra{Caminando}{52,6 min}{muted}{1}
+\cmuted{\footnotesize Cobertura actual: \textbf{\color{ink}69,3\%} de la ciudad tiene paradas a $\le$ 600 m (3,7 rutas por punto).}\end{card}
+\end{tcbraster}
+\vfill\vfill
+\end{frame}
+
+% ===================== 13. Casos reales =====================
+\begin{frame}{Reducción de tiempo entre 58\% y 69\%}{PARTE 4 · CASOS REALES EN BARRANQUILLA}
+\vfill
+\begin{plaincard}[left=0mm,right=0mm,top=1mm,bottom=1mm]
+\renewcommand\arraystretch{1.7}\footnotesize
+\begin{tabular}{@{\hspace{3mm}}>{\raggedright\arraybackslash}p{.34\linewidth}>{\raggedright\arraybackslash}p{.32\linewidth}p{.1\linewidth}p{.1\linewidth}@{}}
+\textbf{\color{muted}Origen $\to$ Destino} & \textbf{\color{muted}Combinación recomendada} & \textbf{\color{green}En Bus} & \textbf{\color{muted}A pie}\\\hline
+\textbf{Portal de Soledad $\to$ Uninorte} & \texttt{R10 (11,9 km) $\to$ U-30 (5,2 km)} & \textbf{\color{green}65,5 min} & \textcolor{muted}{181 min}\\
+\textbf{Paseo Bolívar $\to$ C.C. Buenavista} & \texttt{B2 (3,1 km) $\to$ A9-3 (3,9 km)} & \textbf{\color{green}33,1 min} & \textcolor{muted}{78 min}\\
+\textbf{Estadio Metropolitano $\to$ Gran Malecón} & \texttt{R1 (9,5 km) $\to$ GM (2,2 km)} & \textbf{\color{green}48,5 min} & \textcolor{muted}{118 min}\\
+\textbf{Portal de Soledad $\to$ Joe Arroyo} & \texttt{R1 (11,9 km directa)} & \textbf{\color{green}40,9 min} & \textcolor{muted}{130 min}\\
+\end{tabular}
+\end{plaincard}
+\vfill
+\end{frame}
+
+% ===================== 14. Conclusión + QR =====================
+{\setbeamercolor{background canvas}{bg=navy}
+\begin{frame}[plain]
+\centering\vspace*{2mm}\vfill
+{\scriptsize\bfseries\color{orange}CONCLUSIONES Y PRUEBA EN VIVO\par}\vspace{3mm}
+{\fontsize{16}{20}\selectfont\bfseries\color{white}La teoría de grafos convierte el transporte urbano en\\ decisiones en milisegundos\par}\vspace{2mm}
+{\footnotesize\color{white!70!navy}Escanea el código QR para abrir la página de BusQuilla y probar las rutas de Barranquilla en tiempo real.\par}\vspace{4mm}
+\begin{tcolorbox}[enhanced,width=.86\textwidth,colback=white!6!navy,colframe=white!20!navy,boxrule=.6pt,arc=3mm,left=4mm,right=5mm,top=3mm,bottom=3mm]
+\begin{minipage}[c]{32mm}
+\begin{tcolorbox}[enhanced,colback=white,colframe=white,arc=2mm,left=1.5mm,right=1.5mm,top=2mm,bottom=1.5mm,halign=center]
+\includegraphics[width=21mm]{img/qr.png}\par\vspace{.8mm}{\centering\tiny\bfseries\color{ink}Escanea para acceder\\ a BusQuilla\par}
+\end{tcolorbox}
+\end{minipage}\hspace{6mm}%
+\begin{minipage}[c]{.66\linewidth}\raggedright
+{\scriptsize\bfseries\color{orange}\faLink\ \ O COPIA Y PEGA EL ENLACE\par}\vspace{2.5mm}
+\href{http://akqzxoebyse4ihnqjphztjoc.2.24.85.129.sslip.io/}{\ttfamily\scriptsize\color{white}http://akqzxoebyse4ihnqjphztjoc.2.24.85.129.sslip.io/}
+\end{minipage}
+\end{tcolorbox}
+\vfill
+\end{frame}}
+
+\end{document}
